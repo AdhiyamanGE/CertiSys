@@ -1,0 +1,41 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract StudentDataStorage {
+    struct Student {
+        string studentName;
+        string adminName;
+        string ipfsHash;
+        string blake3Hash;
+        string timestamp;  // Change data type to string
+    }
+
+    mapping(uint256 => Student) public students;
+    uint256 public studentCount;
+
+    event StudentAdded(uint256 indexed index, string studentName, string adminName, string ipfsHash, string blake3Hash, string timestamp);
+
+    function addStudentData(string memory _studentName, string memory _adminName, string memory _ipfsHash, string memory _blake3Hash, string memory _timestamp) public {
+        students[studentCount] = Student(_studentName, _adminName, _ipfsHash, _blake3Hash, _timestamp);
+        emit StudentAdded(studentCount, _studentName, _adminName, _ipfsHash, _blake3Hash, _timestamp);
+        studentCount++;
+    }
+
+    function getStudentDataByQuery(string memory queryType, string memory queryValue) public view returns (string memory studentName, string memory adminName, string memory ipfsHash, string memory blake3Hash, string memory timestamp) {
+        require(studentCount > 0, "No students added yet");
+
+        for (uint256 i = 0; i < studentCount; i++) {
+            if (compareStrings(students[i].studentName, queryValue) && compareStrings(queryType, "studentName")) {
+                return (students[i].studentName, students[i].adminName, students[i].ipfsHash, students[i].blake3Hash, students[i].timestamp);
+            }
+            if (compareStrings(students[i].ipfsHash, queryValue) && compareStrings(queryType, "ipfsHash")) {
+                return (students[i].studentName, students[i].adminName, students[i].ipfsHash, students[i].blake3Hash, students[i].timestamp);
+            }
+        }
+        revert("Student not found");
+    }
+
+    function compareStrings(string memory a, string memory b) internal pure returns (bool) {
+        return (keccak256(abi.encodePacked((a))) == keccak256(abi.encodePacked((b))));
+    }
+}

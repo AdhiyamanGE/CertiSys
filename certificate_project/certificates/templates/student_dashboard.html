@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .dashboard-card {
+            background-color: #f9f9f9;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        h2 {
+            color: #007bff;
+            margin-top: 10px;
+        }
+        p {
+            margin-bottom: 10px;
+        }
+        .marks-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .marks-table th,
+        .marks-table td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+        .marks-table th {
+            background-color: #f2f2f2;
+        }
+        .certificate {
+            margin-top: 20px;
+        }
+        .certificate-link {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 3px;
+        }
+        .certificate-link:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to Your Dashboard, {{ student_data.Name }}</h1>
+        
+        <div class="dashboard-card">
+            <h2>Your Information</h2>
+            <p><strong>Full Name:</strong> {{ student_data.Name }}</p>
+            <p><strong>Branch:</strong> {{ student_data.Branch }}</p>
+            <p><strong>Club hours:</strong> {{ student_data.club_hours }}</p>
+        </div>
+
+        <div class="dashboard-card">
+            <h2>Semester-Wise Marks</h2>
+            <table class="marks-table">
+                <tr>
+                    <th>Semester</th>
+                    <th>Subject 1</th>
+                    <th>Subject 2</th>
+                    <th>Subject 3</th>
+                    <th>Subject 4</th>
+                </tr>
+                <tr>
+                    <td>Semester 1</td>
+                    <td>{{ student_data.sem1_sub1_mark }}</td>
+                    <td>{{ student_data.sem1_sub2_mark }}</td>
+                    <td>{{ student_data.sem1_sub3_mark }}</td>
+                    <td>{{ student_data.sem1_sub4_mark }}</td>
+                </tr>
+                <tr>
+                    <td>Semester 2</td>
+                    <td>{{ student_data.sem2_sub1_mark }}</td>
+                    <td>{{ student_data.sem2_sub2_mark }}</td>
+                    <td>{{ student_data.sem2_sub3_mark }}</td>
+                    <td>{{ student_data.sem2_sub4_mark }}</td>
+                </tr>
+                <tr>
+                    <td>Semester 3</td>
+                    <td>{{ student_data.sem3_sub1_mark }}</td>
+                    <td>{{ student_data.sem3_sub2_mark }}</td>
+                    <td>{{ student_data.sem3_sub3_mark }}</td>
+                    <td>{{ student_data.sem3_sub4_mark }}</td>
+                </tr>
+                <tr>
+                    <td>Semester 4</td>
+                    <td>{{ student_data.sem4_sub1_mark }}</td>
+                    <td>{{ student_data.sem4_sub2_mark }}</td>
+                    <td>{{ student_data.sem4_sub3_mark }}</td>
+                    <td>{{ student_data.sem4_sub4_mark }}</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="dashboard-card">
+    <h2>Certificate Status</h2>
+    {% if student_data.certificate_issued %}
+        <p>Congratulations! Your certificate has been issued.</p>
+        <div class="certificate">
+            <form action="{% url 'download_certificate' student_data.Name %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="certificate-link">Download Certificate</button>
+            </form>
+            {% if student_data.file_link %}
+            <script>
+                window.open("{{ student_data.file_link }}","_blank");
+            </script>
+        {% endif %}
+        </div>
+    {% else %}
+        <p>Your certificate has not been issued yet. Please check back later.</p>
+    {% endif %}
+</div>
+
+</body>
+</html>
